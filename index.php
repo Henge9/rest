@@ -7,12 +7,11 @@ $fullurl = $_SERVER['REQUEST_URI'];
 echo $fullurl;
 echo '<br>';
 //makes a array of the url
-$url_parts = explode('/', $fullurl);
+$url_parts = explode('?', $fullurl);
 //split the aray up for easyer understanding of the code
-$tablename = $url_parts[2];
-//$columns = $url_parts[3];
-//$column_sort = $url_parts[4];
-//$value = $url_parts[5];
+$url_to_query = explode('&',$url_parts[1]);
+$table = explode('=',$url_to_query[0]);
+$column = explode('=',$url_to_query[1]);
 
 /*=============================
 Please note that the request method 
@@ -30,15 +29,17 @@ $method = $_SERVER['REQUEST_METHOD'];
 switch ($method) {
 	/*==========================
 	GET example:
-	/rest/tablename
+	/rest/?table=test&column=*
 	
 	============================*/
 	case 'GET':
-		$query = 
-			"SELECT 'columns'
-			FROM $tablename
-			WHERE 'column_sort value'";
+		$query = "
+			SELECT $column[1]
+			FROM $table[1]
+			;";
 		echo $query;
+		$result = mysqli_query($db, $query);
+		$num_rows = db_print_result($result);
 		break;
 	
 	default:
@@ -46,6 +47,25 @@ switch ($method) {
 		break;
 }
 echo $method;
+
+
+function db_print_result($result) {
+	$i = 0;
+	while ($row = mysqli_fetch_assoc($result)) {
+   		$i++;
+   		if ($i==1) {
+   			foreach ($row as $index => $value) {
+   				echo "$index, ";
+   			}
+   			echo "<br>\n";
+   		}
+   		foreach ($row as $value) {
+   			echo "$value, ";
+   		}
+   		echo "<br>\n";
+	}
+	return $i;
+}
 /*
 
 
