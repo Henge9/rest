@@ -4,8 +4,8 @@ include_once 'config.php';
 
 //writes the url /rest/tablename/column/id into $fullurl
 $fullurl = $_SERVER['REQUEST_URI']; 
-echo $fullurl;
-echo '<br>';
+//echo $fullurl;
+//echo '<br>';
 //makes a array of the url
 $url_parts = explode('?', $fullurl);
 //split the aray up for easyer understanding of the code
@@ -37,18 +37,27 @@ switch ($method) {
 			SELECT $column[1]
 			FROM $table[1]
 			;";
-		echo $query;
+		//echo $query;
 		$result = mysqli_query($db, $query);
-		$num_rows = db_print_result($result);
+		$num_rows = db_to_json($result);
 		break;
 	
 	default:
 		echo "crap";
 		break;
 }
-echo $method;
 
 
+function db_to_json($result) {
+	$rows = array();
+	while($r = mysqli_fetch_assoc($result)) {
+    	$rows[] = $r;
+	}
+	//var_dump($rows);
+	
+	print_r(json_encode($rows)); 
+}
+/*
 function db_print_result($result) {
 	$i = 0;
 	while ($row = mysqli_fetch_assoc($result)) {
@@ -70,3 +79,4 @@ function db_print_result($result) {
 
 
 */
+?>
