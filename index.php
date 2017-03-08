@@ -1,13 +1,17 @@
 <?php 
 include_once 'config.php';
-
+header('Access-Control-Allow-Origin: http://localhost:3000');
+header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+header('Access-Control-Allow-Methods: GET, POST, PUT');
+header('Content-Type: application/json');
 
 //writes the url /rest/tablename/column/id into $fullurl
 $fullurl = $_SERVER['REQUEST_URI']; 
-//echo $fullurl;
-//echo '<br>';
+
 //makes a array of the url
 $url_parts = explode('?', $fullurl);
+
+
 //split the aray up for easyer understanding of the code
 $url_to_query = explode('&',$url_parts[1]);
 $table = explode('=',$url_to_query[0]);
@@ -37,7 +41,7 @@ switch ($method) {
 			SELECT $column[1]
 			FROM $table[1]
 			;";
-		//echo $query;
+		
 		$result = mysqli_query($db, $query);
 		$num_rows = db_to_json($result);
 		break;
@@ -53,9 +57,9 @@ function db_to_json($result) {
 	while($r = mysqli_fetch_assoc($result)) {
     	$rows[] = $r;
 	}
-	//var_dump($rows);
 	
-	print_r(json_encode($rows)); 
+	
+	echo (json_encode($rows)); 
 }
 /*
 function db_print_result($result) {
