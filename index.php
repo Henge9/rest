@@ -9,14 +9,22 @@ header('Content-Type: application/json');
 $fullurl = $_SERVER['REQUEST_URI']; 
 
 //makes a array of the url
-$url_parts = explode('?', $fullurl);
+$url_parts = explode('?/', $fullurl);
 
 
 //split the aray up for easyer understanding of the code
-$url_to_query = explode('&',$url_parts[1]);
-$table = explode('=',$url_to_query[0]);
-$column = explode('=',$url_to_query[1]);
-
+$url_to_query = explode('/',$url_parts[1]);
+/* ====================================
+test ekon
+===========================
+echo $url_parts[0];
+echo "||";
+echo $url_parts[1];
+echo "||";
+echo $url_to_query[0];
+echo "||";
+echo $url_to_query[1];
+===============================*/
 /*=============================
 Please note that the request method 
 shall not be confused with $_POST and $_GET from 
@@ -33,13 +41,13 @@ $method = $_SERVER['REQUEST_METHOD'];
 switch ($method) {
 	/*==========================
 	GET example:
-	/rest/?table=test&column=*
+	/rest/?/table-name
 	
 	============================*/
 	case 'GET':
 		$query = "
-			SELECT $column[1]
-			FROM $table[1]
+			SELECT *
+			FROM $url_to_query[0]
 			;";
 		
 		$result = mysqli_query($db, $query);
@@ -47,7 +55,7 @@ switch ($method) {
 		break;
 	
 	default:
-		echo "crap";
+		echo "Method not accepeted";
 		break;
 }
 
@@ -61,26 +69,9 @@ function db_to_json($result) {
 	
 	echo (json_encode($rows)); 
 }
-/*
-function db_print_result($result) {
-	$i = 0;
-	while ($row = mysqli_fetch_assoc($result)) {
-   		$i++;
-   		if ($i==1) {
-   			foreach ($row as $index => $value) {
-   				echo "$index, ";
-   			}
-   			echo "<br>\n";
-   		}
-   		foreach ($row as $value) {
-   			echo "$value, ";
-   		}
-   		echo "<br>\n";
-	}
-	return $i;
-}
-/*
 
 
-*/
+
+
+
 ?>
