@@ -1,0 +1,30 @@
+.us-cards {
+	padding: 5px;
+	width: 200px;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+	float: left;
+}
+
+.m-cards{
+    padding: 5px;	
+	width: 200px;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+	float: left;
+}
+
+.d-cards{
+    padding: 5px;
+	width: 200px;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+	float: left;
+}
+.input-text{
+	float: right;
+	width: 50px;
+}

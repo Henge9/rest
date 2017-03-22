@@ -13,9 +13,10 @@ $url_parts = explode('?/', $fullurl);
 
 
 //split the aray up for easyer understanding of the code
-$url_to_query = explode('/',$url_parts[1]);
+$url_to_cleaning = explode('/',$url_parts[1]);
+$url_to_query=mysqli_real_escape_string ($db, $url_to_cleaning[0]);
 /* ====================================
-test ekon
+test eko
 ===========================
 echo $url_parts[0];
 echo "||";
@@ -25,6 +26,7 @@ echo $url_to_query[0];
 echo "||";
 echo $url_to_query[1];
 ===============================*/
+
 /*=============================
 Please note that the request method 
 shall not be confused with $_POST and $_GET from 
@@ -47,7 +49,7 @@ switch ($method) {
 	case 'GET':
 		$query = "
 			SELECT *
-			FROM $url_to_query[0]
+			FROM $url_to_query
 			;";
 		
 		$result = mysqli_query($db, $query);
