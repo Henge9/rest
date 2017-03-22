@@ -22,7 +22,8 @@
 					<form action='' method='post'>
 						<h3>Id: {$page['id']}</h3><input type='hidden' value='{$page['id']}' name='id'>
 						<input type='hidden' value='us_cards' name='table'>
-						<p> number: <input class='input-text' type='text' name='number' value='{$page['number']}'></p>
+						<p> Number: <input class='input-text' type='text' name='number' value='{$page['number']}'></p>
+						<p> Value: <input class='input-text' type='text' name='value' value='{$page['value']}'></p>
 						<p>Analytics: <input class='input-text' type='text' name='analytics' value='{$page['analytics']}'></p>
 						<p>Development: <input class='input-text' type='text' name='development' value='{$page['development']}'></p>
 						<p>Test: <input class='input-text' type='text' name='test' value='{$page['test']}'></p>
@@ -43,7 +44,7 @@
 					<form action='' method='post'>
 						<h3>Id: {$page['id']}</h1><input type='hidden' value='{$page['id']}' name='id'>
 						<input type='hidden' value='m_cards' name='table'>
-						<p> number: <input class='input-text' type='text' name='number' value='{$page['number']}'></p>
+						<p>Number: <input class='input-text' type='text' name='number' value='{$page['number']}'></p>
 						<p>Analytics: <input class='input-text' type='text' name='analytics' value='{$page['analytics']}'></p>
 						<p>Development: <input class='input-text' type='text' name='development' value='{$page['development']}'></p>
 						<p>Test: <input class='input-text' type='text' name='test' value='{$page['test']}'></p>
@@ -64,7 +65,7 @@
 					<form action='' method='post'>
 						<h3>Id: {$page['id']}</h3><input type='hidden' value='{$page['id']}' name='id'>
 						<input type='hidden' value='d_cards' name='table'>
-						<p> number: <input class='input-text' type='text' name='number' value='{$page['number']}'></p>
+						<p>Number: <input class='input-text' type='text' name='number' value='{$page['number']}'></p>
 						<p>Analytics: <input class='input-text' type='text' name='analytics' value='{$page['analytics']}'></p>
 						<p>Development: <input class='input-text' type='text' name='development' value='{$page['development']}'></p>
 						<p>Test: <input class='input-text' type='text' name='test' value='{$page['test']}'></p>
@@ -79,7 +80,9 @@
 		
 		if(isset($_POST['table'])){
 			
-			
+			if (isset($_POST['value'])) {
+				$value=mysqli_real_escape_string ($db, $_POST['value']);
+			}
 			$table=mysqli_real_escape_string ($db, $_POST['table']);
 			$number=mysqli_real_escape_string ($db, $_POST['number']);
 			$analytics=mysqli_real_escape_string ($db, $_POST['analytics']);
@@ -94,15 +97,27 @@
 				$number2=$number;
 			}
 
-		
-			$query="
+			if (isset($_POST['value'])) {
+				$query="
 				UPDATE $table
 				SET number='$number2', 
+					value=$value,
 					analytics=$analytics, 
 					development=$development, 
 					test=$test
 				WHERE id=$id 
 			";
+				
+			}else{
+				$query="
+					UPDATE $table
+					SET number='$number2', 
+						analytics=$analytics, 
+						development=$development, 
+						test=$test
+					WHERE id=$id 
+				";
+			}
 			$result = mysqli_query($db, $query); 
 
 		}
