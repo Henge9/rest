@@ -15,6 +15,8 @@ $url_parts = explode('?/', $fullurl);
 //split the aray up for easyer understanding of the code
 $url_to_cleaning = explode('/',$url_parts[1]);
 $url_to_query=mysqli_real_escape_string ($db, $url_to_cleaning[0]);
+$url_to_query1=mysqli_real_escape_string ($db, $url_to_cleaning[1]);
+$url_to_query2=mysqli_real_escape_string ($db, $url_to_cleaning[2]);
 /* ====================================
 test eko
 ===========================
@@ -57,7 +59,15 @@ switch ($method) {
 		$num_rows = db_to_json($result);
 		break;
 	case 'POST':
-		echo "post";
+		$query = "
+			INSERT INTO $url_to_query (team, score)
+			VALUES ($url_to_query1, $url_to_query2);
+		";
+		
+		$result = mysqli_query($db, $query);
+		echo "||||||||||||||||||||||||||||||||";
+		echo $_POST['team'];
+		echo $fullurl;
 		break;
 	default:
 		echo "Method not accepeted";
