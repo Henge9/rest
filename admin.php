@@ -7,11 +7,64 @@
 <body>
 	
 	<?php 
+	session_start();
 	include_once 'config.php';
+	
+	$error="";
+	//logout
+	if (isset($_POST['log_out'])) {
+		$_SESSION['admin']=false;
+		/*===========================
+		Cookiekiller. To be activated 
+		when notices are turned of.
+		=============================
+		$_SESSION= array();
+		$params = session_get_cookie_params();
+    	setcookie(session_name(), '', time() - 42000,
+        	$params["path"], $params["domain"],
+        	$params["secure"], $params["httponly"]
+    	);
+		session_destroy();
+		=============================*/
 
+	}
+	
+	/*===============================
+		Login check password
+	=================================*/
+	if (isset($_POST['password'])) {
+		//$salt = "$2a$04$l4cQKFAB9o56tgURYYMtIt";
+		$username=mysqli_real_escape_string ($db, $_POST['username']);
+		$password=mysqli_real_escape_string ($db, $_POST['password']);
 
-	if(true){
+		$query="
+			SELECT password FROM users
+			WHERE username='$username';
+		";
+		$result = mysqli_query($db, $query);
+		$from_db = mysqli_fetch_assoc($result);
+		$pw_from_db = $from_db['password'];
+		//$password = 'admin';
+		$hashed_password = crypt($password, '$2a$04$l4cQKFAB9o56tgURYYMtIt');
+		//$pw_from_db='$2a$04$l4cQKFAB9o56tgURYYMtIeg9kyR4..RZE/s9d5hg0GmCZ3ygQESYK';
 
+		if (hash_equals($pw_from_db, $hashed_password)) {
+			$_SESSION['admin'] = true;
+
+		}else{
+			$error = "Username or password not correct.";
+			//$_SESSION['admin'] = false;
+		}			
+	}
+	
+	if($_SESSION['admin']){
+
+		echo "
+			<form action='' method='post'>
+				<input type='submit' value='Log out' name='log_out'>
+			</form>
+		";
+		
 		function showcards($db){
 			$query = "SELECT * FROM us_cards";
 			$result = mysqli_query($db, $query);
@@ -83,6 +136,7 @@
 			if (isset($_POST['value'])) {
 				$value=mysqli_real_escape_string ($db, $_POST['value']);
 			}
+
 			$table=mysqli_real_escape_string ($db, $_POST['table']);
 			$number=mysqli_real_escape_string ($db, $_POST['number']);
 			$analytics=mysqli_real_escape_string ($db, $_POST['analytics']);
@@ -122,8 +176,35 @@
 
 		}
 		showcards($db);
+	}else{ 
+		//login form
+		echo "
+			<form method='post'>
+				<h3>Username:</h3><br />
+				<input type='text' name='username'><br />
+				<h3>Password:</h3><br />
+				<input type='password' name='password'><br />
+				<input type='submit' value='Submit'>
+				<h3>$error</h3>
+			</form>
+		";
+		
+
 	}
 	?>
 
 </body>
 </html>
+<!--function generateSalt($max) {
+		        $characterList = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*?";
+		        $i = 0;
+		        $salt = "";
+		        while ($i < $max) {
+		            $salt .= $characterList{mt_rand(0, (strlen($characterList) - 1))};
+		            $i++;
+		        }
+		        echo "||";
+		        echo $salt;
+		        echo "||";
+			}
+			generateSalt('22');-->
