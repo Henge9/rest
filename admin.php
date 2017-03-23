@@ -8,7 +8,7 @@
 	
 	<?php 
 	//error_reporting(E_ALL & ~E_NOTICE);
-	
+	session_start();
 	include_once 'config.php';
 	
 	$error="";
@@ -39,12 +39,16 @@
 		$result = mysqli_query($db, $query);
 		$from_db = mysqli_fetch_assoc($result);
 		$pw_from_db = $from_db['password'];
+		echo $pw_from_db;
+		echo '<br/>';
 		//$password = 'admin';
 		$hashed_password = crypt($password, '$2a$04$l4cQKFAB9o56tgURYYMtIt');
 		//$pw_from_db='$2a$04$l4cQKFAB9o56tgURYYMtIeg9kyR4..RZE/s9d5hg0GmCZ3ygQESYK';
+		echo $hashed_password; 
+
 
 		if (hash_equals($pw_from_db, $hashed_password)) {
-			session_start();
+			
 			$_SESSION['admin'] = true;
 
 		}else{
@@ -66,6 +70,19 @@
 			$result = mysqli_query($db, $query);
 			echo "<div class='us-cards'>";
 			echo "<h2>User stories</h2>";
+			echo "
+					<form action='' method='post'>
+						<input type='hidden' value='us_cards' name='table'>
+						<p>Number: <input class='input-text' type='text' name='number' value=''></p>
+						<p> Value: <input class='input-text' type='text' name='value' value=''></p>
+						<p>Analytics: <input class='input-text' type='text' name='analytics' value=''></p>
+						<p>Development: <input class='input-text' type='text' name='development' value=''></p>
+						<p>Test: <input class='input-text' type='text' name='test' value=''></p>
+						<br />
+						<input type='submit' value='Add Card' name='add_us'>
+					</form>
+					<hr />
+				";
 			while($page = mysqli_fetch_assoc($result)){
 				echo "
 					<form action='' method='post'>
@@ -78,8 +95,9 @@
 						<p>Test: <input class='input-text' type='text' name='test' value='{$page['test']}'></p>
 						<br />
 						<input type='submit' value='Save change' name='savepage'>
+						<input type='submit' value='Delete' name='delete'>
 					</form>
-					
+					<hr />
 				";
 			}
 			echo "</div>";
@@ -88,6 +106,18 @@
 			$result = mysqli_query($db, $query);
 			echo "<div class='m-cards'>";
 			echo "<h2>Maintanence</h1>";
+			echo "
+					<form action='' method='post'>
+						<input type='hidden' value='m_cards' name='table'>
+						<p>Number: <input class='input-text' type='text' name='number' value=''></p>
+						<p>Analytics: <input class='input-text' type='text' name='analytics' value=''></p>
+						<p>Development: <input class='input-text' type='text' name='development' value=''></p>
+						<p>Test: <input class='input-text' type='text' name='test' value=''></p>
+						<br />
+						<input type='submit' value='Add Card' name='add'>
+					</form>
+					<hr />
+				";
 			while($page = mysqli_fetch_assoc($result)){
 				echo "
 					<form action='' method='post'>
@@ -99,8 +129,9 @@
 						<p>Test: <input class='input-text' type='text' name='test' value='{$page['test']}'></p>
 						<br />
 						<input type='submit' value='Save change' name='savepage'>
+						<input type='submit' value='Delete' name='delete'>
 					</form>
-					
+					<hr />
 				";
 			}
 			echo "</div>";
@@ -108,7 +139,21 @@
 			$query = "SELECT * FROM d_cards";
 			$result = mysqli_query($db, $query);
 			echo "<div class='d-cards'>";
-			echo "<h2>Deviations</h2>";
+			echo "<h2>Defects</h2>";
+
+			echo "
+					<form action='' method='post'>
+						<input type='hidden' value='d_cards' name='table'>
+						<p>Number: <input class='input-text' type='text' name='number' value=''></p>
+						<p>Analytics: <input class='input-text' type='text' name='analytics' value=''></p>
+						<p>Development: <input class='input-text' type='text' name='development' value=''></p>
+						<p>Test: <input class='input-text' type='text' name='test' value=''></p>
+						<br />
+						<input type='submit' value='Add Card' name='add'>
+					</form>
+					<hr />
+				";
+
 			while($page = mysqli_fetch_assoc($result)){
 				echo "
 					<form action='' method='post'>
@@ -120,8 +165,9 @@
 						<p>Test: <input class='input-text' type='text' name='test' value='{$page['test']}'></p>
 						<br />
 						<input type='submit' value='Save change' name='savepage'>
+						<input type='submit' value='Delete' name='delete'>
 					</form>
-					
+					<hr />
 				";
 			}
 		}
@@ -156,9 +202,8 @@
 					development=$development, 
 					test=$test
 				WHERE id=$id 
-			";
-				
-			}else{
+			"; 
+			} else{
 				$query="
 					UPDATE $table
 					SET number='$number2', 
@@ -167,6 +212,27 @@
 						test=$test
 					WHERE id=$id 
 				";
+			}
+
+			if(isset($_POST['delete'])) {
+				$query="
+					DELETE 
+					FROM $table
+					WHERE id=$id
+					";
+			}
+
+			if(isset($_POST['add_us'])) {
+				$query="
+					INSERT INTO $table (number, value, analytics, development, test)
+					VALUES ('$number2', $value, $analytics, $development, $test)
+					";
+			}
+			if(isset($_POST['add'])) {
+				$query="
+					INSERT INTO $table (number, analytics, development, test)
+					VALUES ('$number2', $analytics, $development, $test)
+					";
 			}
 			$result = mysqli_query($db, $query); 
 
