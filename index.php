@@ -47,7 +47,7 @@ switch ($method) {
 	GET example:
 	/rest/?/table-name
 	POST example:
-	/rest/?/table-name
+	/rest/?/table-name/
 	============================*/
 	case 'GET':
 		$query = "
@@ -61,13 +61,9 @@ switch ($method) {
 	case 'POST':
 		$query = "
 			INSERT INTO $url_to_query (team, score)
-			VALUES ($url_to_query1, $url_to_query2);
+			VALUES ('$url_to_query1', $url_to_query2);
 		";
-		
-		$result = mysqli_query($db, $query);
-		echo "||||||||||||||||||||||||||||||||";
-		echo $_POST['team'];
-		echo $fullurl;
+		mysqli_query($db, $query);
 		break;
 	default:
 		echo "Method not accepeted";
