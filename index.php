@@ -44,7 +44,8 @@ switch ($method) {
 	/*==========================
 	GET example:
 	/rest/?/table-name
-	
+	POST example:
+	/rest/?/table-name
 	============================*/
 	case 'GET':
 		$query = "
@@ -55,7 +56,9 @@ switch ($method) {
 		$result = mysqli_query($db, $query);
 		$num_rows = db_to_json($result);
 		break;
-	
+	case 'POST':
+		echo "post";
+		break;
 	default:
 		echo "Method not accepeted";
 		break;

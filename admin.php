@@ -7,25 +7,20 @@
 <body>
 	
 	<?php 
-	session_start();
+	//error_reporting(E_ALL & ~E_NOTICE);
+	
 	include_once 'config.php';
 	
 	$error="";
 	//logout
 	if (isset($_POST['log_out'])) {
-		$_SESSION['admin']=false;
-		/*===========================
-		Cookiekiller. To be activated 
-		when notices are turned of.
-		=============================
+		
 		$_SESSION= array();
 		$params = session_get_cookie_params();
     	setcookie(session_name(), '', time() - 42000,
         	$params["path"], $params["domain"],
         	$params["secure"], $params["httponly"]
     	);
-		session_destroy();
-		=============================*/
 
 	}
 	
@@ -49,6 +44,7 @@
 		//$pw_from_db='$2a$04$l4cQKFAB9o56tgURYYMtIeg9kyR4..RZE/s9d5hg0GmCZ3ygQESYK';
 
 		if (hash_equals($pw_from_db, $hashed_password)) {
+			session_start();
 			$_SESSION['admin'] = true;
 
 		}else{
@@ -57,7 +53,7 @@
 		}			
 	}
 	
-	if($_SESSION['admin']){
+	if(isset($_SESSION['admin']) || $_SESSION['admin']){
 
 		echo "
 			<form action='' method='post'>
@@ -184,6 +180,7 @@
 				<input type='text' name='username'><br />
 				<h3>Password:</h3><br />
 				<input type='password' name='password'><br />
+				<h3>When you push submit you accept the use of cookies</h3>
 				<input type='submit' value='Submit'>
 				<h3>$error</h3>
 			</form>
